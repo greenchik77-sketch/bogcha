@@ -21,7 +21,7 @@ def register(form: UserSchema, db: Session =Depends(database)):
         full_name=form.full_name,
         email=form.email,
         password=password_hash(form.password),
-        role="admin"
+        role="user"
     )
     db.add(user)
     db.commit()
