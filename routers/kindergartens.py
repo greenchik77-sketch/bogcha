@@ -1,9 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from database import database
 from models.kindergartens import Kindergartens
 from models.users import Users
-from schemas.kindergartens import KindergartenSchema
+from schemas.kindergartens import KindergartenSchema, RegionSelect, TypeSelect
 from utils.auth import get_current_user
 from utils.check_ident import check_ident
 from utils.role_verification import admin_verification
@@ -44,8 +47,26 @@ def add_kindergarten(form: KindergartenSchema, db: Session = Depends(database),
     raise HTTPException(status_code=201, detail="Kindergarten added successfully")
 
 
-@kindergarten_router.get("/kindergartens")
-def get_all_kindergartens(db: Session = Depends(database)):
+@kindergarten_router.get('/kindergartens')
+def get_all_kindergartens(region: RegionSelect = None, min_price: int = None, max_price: int = None,
+                          type: TypeSelect = None, languages: List[str] = Query(None),
+                          programs: List[str] = Query(None), db: Session = Depends(database)):
+    if region:
+        return db.query(Kindergartens).filter(Kindergartens.region == region).all()
+    if min_price:
+        return db.query(Kindergartens).filter(Kindergartens.price >= min_price).all()
+    if max_price:
+        return db.query(Kindergartens).filter(Kindergartens.price <= max_price).all()
+    if type:
+        return db.query(Kindergartens).filter(Kindergartens.type == type).all()
+    if languages:
+        for lang in languages:
+            return db.query(Kindergartens).filter(func.JSON_CONTAINS(Kindergartens.languages, f'"{lang}"')).all()
+
+    if programs:
+        for program in programs:
+            return db.query(Kindergartens).filter(func.JSON_CONTAINS(Kindergartens.programs, f'"{program}"')).all()
+
     return db.query(Kindergartens).all()
 
 
