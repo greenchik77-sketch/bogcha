@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, JSON, Text, Time, Boolean
+from sqlalchemy.orm import relationship
 from database import Base
 
 
@@ -14,6 +15,8 @@ class Kindergartens(Base):
     programs = Column(JSON, nullable=False)
     languages = Column(JSON, nullable=False)
     price = Column(Integer, nullable=False)
+    rating_sum = Column(Float, nullable=False)
+    rating_count = Column(Integer, nullable=False)
     rating = Column(Float, nullable=False)
     image = Column(String(255), nullable=False)
     short = Column(Text, nullable=False)
@@ -24,3 +27,5 @@ class Kindergartens(Base):
     age_limit = Column(String(255), nullable=False)
     islaw = Column(Boolean, nullable=False)
     mini_gallery = Column(JSON, nullable=False)
+
+    comments = relationship("Comments", back_populates="kindergarten")

@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 from database import Base
 
 
@@ -10,3 +11,5 @@ class Users(Base):
     email = Column(String(255), unique=True, nullable=False)
     password = Column(String(255), nullable=False)
     role = Column(String(255), nullable=False)
+
+    comments = relationship("Comments", back_populates="user")

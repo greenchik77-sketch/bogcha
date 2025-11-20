@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from database import Base, engine
+from routers.comments import comment_router
 from routers.kindergartens import kindergarten_router
 from routers.users import user_router
 
@@ -10,3 +11,5 @@ Base.metadata.create_all(engine)
 app.include_router(user_router, tags=["Users"])
 
 app.include_router(kindergarten_router, tags=["Kindergarten"])
+
+app.include_router(comment_router, tags=["Comments"])

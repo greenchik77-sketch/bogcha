@@ -1,5 +1,4 @@
 from typing import List
-
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session
@@ -20,7 +19,7 @@ kindergarten_router = APIRouter()
 def add_kindergarten(form: KindergartenSchema, db: Session = Depends(database),
                      user_data: Users = Depends(get_current_user)):
 
-    admin_verification(user_data)
+    # admin_verification(user_data)
 
     kindergarten = Kindergartens(
         name=form.name,
@@ -31,7 +30,9 @@ def add_kindergarten(form: KindergartenSchema, db: Session = Depends(database),
         programs=form.programs,
         languages=form.languages,
         price=form.price,
-        rating=0,
+        rating_sum=0,
+        rating_count=0,
+        rating = 0,
         image=form.image,
         short=form.short,
         phone_number=form.phone_number,
